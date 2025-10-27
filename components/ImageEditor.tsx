@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { ImageData } from '../types';
 import { editImageWithPrompt } from '../services/geminiService';
-import { UploadIcon, PhotoIcon, SpinnerIcon, SparklesIcon, ExclamationCircleIcon } from './icons';
+import { UploadIcon, PhotoIcon, SpinnerIcon, SparklesIcon, ExclamationCircleIcon, DownloadIcon } from './icons';
 
 const samplePrompts = [
   'Biến thành tranh vẽ màu nước',
@@ -72,7 +72,7 @@ const ImageEditor: React.FC = () => {
   }, [originalImage, prompt]);
 
   const ImagePlaceholder: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="w-full h-full bg-white/5 rounded-lg flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/20 hover:border-cyan-400 transition-colors duration-300">
+    <div className="w-full h-full bg-white/5 rounded-lg flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/20 hover:border-cyan-400 transition-all duration-300 group-hover:scale-[1.02]">
       {children}
       <p className="mt-4 text-sm font-semibold text-gray-400 text-center">{title}</p>
     </div>
@@ -81,7 +81,7 @@ const ImageEditor: React.FC = () => {
   return (
     <div className="relative">
       {error && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-full max-w-lg p-4 text-sm text-red-200 bg-red-900/80 backdrop-blur-sm rounded-lg shadow-lg z-20 border border-red-700 flex items-center" role="alert">
+        <div className="animate-fadeIn absolute -top-4 left-1/2 -translate-x-1/2 w-full max-w-lg p-4 text-sm text-red-200 bg-red-900/80 backdrop-blur-sm rounded-lg shadow-lg z-20 border border-red-700 flex items-center" role="alert">
           <ExclamationCircleIcon className="w-5 h-5 mr-3 flex-shrink-0"/>
           <div><span className="font-medium">Lỗi:</span> {error}</div>
         </div>
@@ -95,9 +95,9 @@ const ImageEditor: React.FC = () => {
               {originalImage ? (
                 <img src={originalImage.dataUrl} alt="Original" className="w-full h-full object-contain rounded-lg shadow-lg"/>
               ) : (
-                <button onClick={handleUploadClick} className="w-full h-full">
+                <button onClick={handleUploadClick} className="w-full h-full group">
                   <ImagePlaceholder title="Nhấn để tải ảnh lên">
-                    <UploadIcon className="w-12 h-12 text-gray-500" />
+                    <UploadIcon className="w-12 h-12 text-gray-500 transition-transform duration-300 group-hover:scale-110" />
                   </ImagePlaceholder>
                 </button>
               )}
@@ -131,7 +131,7 @@ const ImageEditor: React.FC = () => {
                   key={sample}
                   onClick={() => setPrompt(sample)}
                   disabled={isLoading}
-                  className="px-3 py-1 bg-gray-700/50 hover:bg-cyan-900/50 text-cyan-300 text-xs font-medium rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1 bg-gray-700/50 hover:bg-cyan-900/50 text-cyan-300 text-xs font-medium rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
                 >
                   {sample}
                 </button>
@@ -158,7 +158,7 @@ const ImageEditor: React.FC = () => {
           </div>
 
           {/* Output Panel */}
-          <div className="bg-gray-800/50 backdrop-blur-md p-6 rounded-2xl shadow-2xl shadow-black/20 border border-white/10 h-full">
+          <div className="bg-gray-800/50 backdrop-blur-md p-6 rounded-2xl shadow-2xl shadow-black/20 border border-white/10 h-full flex flex-col">
             <h2 className="text-lg font-semibold text-white mb-6">Kết quả</h2>
             <div className="aspect-video w-full">
               {isLoading ? (
@@ -167,13 +167,25 @@ const ImageEditor: React.FC = () => {
                     <p className="mt-4 text-sm font-semibold text-gray-400">Đang chỉnh sửa...</p>
                   </div>
                 ) : editedImage ? (
-                  <img src={editedImage} alt="Edited" className="w-full h-full object-contain rounded-lg shadow-lg"/>
+                  <img src={editedImage} key={editedImage} alt="Edited" className="w-full h-full object-contain rounded-lg shadow-lg animate-fadeIn"/>
                 ) : (
                   <ImagePlaceholder title="Ảnh đã chỉnh sửa sẽ xuất hiện ở đây">
                     <PhotoIcon className="w-12 h-12 text-gray-500" />
                   </ImagePlaceholder>
                 )}
             </div>
+            {editedImage && !isLoading && (
+              <div className="mt-6 text-center">
+                <a
+                  href={editedImage}
+                  download="tdx-edited-image.png"
+                  className="inline-flex items-center justify-center bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-green-500 shadow-lg"
+                >
+                  <DownloadIcon className="-ml-1 mr-2 h-5 w-5"/>
+                  Tải ảnh
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

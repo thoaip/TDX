@@ -51,6 +51,7 @@ export async function editImageWithPrompt(
 export async function generateVideoWithPrompt(
   prompt: string,
   aspectRatio: '16:9' | '9:16',
+  resolution: '720p' | '1080p',
   image?: { base64: string; mimeType: string; }
 ): Promise<string> {
     // Veo yêu cầu tạo một instance mới để lấy API key mới nhất
@@ -61,7 +62,7 @@ export async function generateVideoWithPrompt(
         prompt: prompt,
         config: {
             numberOfVideos: 1,
-            resolution: '720p', // Sử dụng 720p để tạo nhanh hơn
+            resolution: resolution,
             aspectRatio: aspectRatio
         }
     };
