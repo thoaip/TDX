@@ -1,0 +1,5 @@
+{
+  "name": "TDX Creative Studio",
+  "description": "Một bộ công cụ sáng tạo trên web cho phép người dùng chỉnh sửa hình ảnh bằng câu lệnh văn bản với Gemini 2.5 Flash Image và tạo video chất lượng cao từ văn bản hoặc hình ảnh bằng Veo 3.1.",
+  "requestFramePermissions": []
+}
